@@ -27,4 +27,12 @@ graph TD
     FastAPI1 -->|Tail Stream| RedisStream
 
     CeleryBeat[Celery Scheduler] -->|Trigger Snapshot| CeleryWorker
-    CeleryWorker -->|Document Snapshots| MinIO
+    CeleryWorker -->|Document Snapshots| MinIO[(MinIO S3 Snapshot Store)]
+```
+
+### Core Collaboration Flow
+1. **Handshake & Auth**: A client upgrades their HTTP connection to a WebSocket at `ws://localhost/ws/doc/{room_id}?token={jwt_token}`. The connection is validated, and the user's presence is registered in Redis.
+2. **Real-time Synchronization (OT)**: When Client A edits, they send an operational delta: `{ op: "insert", pos: 10, chars: "hello", revision: 5 }`.
+3. **Conflict Resolution**: The FastAPI node locks the document row using `SELECT FOR UPDATE`. If concurrent edits have bumped the server's revision to `8`, the server automatically transforms the incoming delta against operations `6, 7, 8`, applies the transformed edit, logs it, and broadcasts it to all nodes via **Redis Pub/Sub**.
+4. **Multiplexed Broadcast**: The pub/sub channels ensure that other connected FastAPI instances receive the edit and push it to their respective local clients instantly.
+5. **Debounced AI stream**: Edits reset a `0.8-second` Redis debounce 
