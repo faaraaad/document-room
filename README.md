@@ -35,4 +35,18 @@ graph TD
 2. **Real-time Synchronization (OT)**: When Client A edits, they send an operational delta: `{ op: "insert", pos: 10, chars: "hello", revision: 5 }`.
 3. **Conflict Resolution**: The FastAPI node locks the document row using `SELECT FOR UPDATE`. If concurrent edits have bumped the server's revision to `8`, the server automatically transforms the incoming delta against operations `6, 7, 8`, applies the transformed edit, logs it, and broadcasts it to all nodes via **Redis Pub/Sub**.
 4. **Multiplexed Broadcast**: The pub/sub channels ensure that other connected FastAPI instances receive the edit and push it to their respective local clients instantly.
-5. **Debounced AI stream**: Edits reset a `0.8-second` Redis debounce 
+5. **Debounced AI stream**: Edits reset a `0.8-second` Redis debounce timer. When the typing pauses, Celery dispatches a task to request a streaming review from OpenAI/Anthropic. The worker streams response chunks directly into a **Redis Stream**.
+6. **SSE Announcers**: The client listens to the `/api/sse/analysis/{room_id}` SSE endpoint. FastAPI tails the Redis stream via `XREAD` and pushes text chunks to the client.
+7. **S3 Backups**: Celery Beat runs every 60 seconds, serializing latest revisions and archiving them to MinIO (S3-compatible) storage.
+
+---
+
+## 2. Technology Stack & Observability
+
+| Layer | Technology | Role |
+| :--- | :--- | :--- |
+| **Core Web API** | FastAPI + Starlette | WebSockets, SSE & REST API Gateway |
+| **Pub/Sub & Cache** | Redis 7 | Event fan-out, presence heartbeats, AI streams, & Celery broker |
+| **Database** | PostgreSQL 15 + SQLAlchemy (Asyncpg) | Schema persistence & transactional OT history logs |
+| **Task Queue** | Celery 5 + Celery Beat | Debounced AI completions & periodic MinIO backups |
+| **Object Storage** | MinIO
