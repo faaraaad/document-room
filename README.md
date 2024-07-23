@@ -49,4 +49,31 @@ graph TD
 | **Pub/Sub & Cache** | Redis 7 | Event fan-out, presence heartbeats, AI streams, & Celery broker |
 | **Database** | PostgreSQL 15 + SQLAlchemy (Asyncpg) | Schema persistence & transactional OT history logs |
 | **Task Queue** | Celery 5 + Celery Beat | Debounced AI completions & periodic MinIO backups |
-| **Object Storage** | MinIO
+| **Object Storage** | MinIO (S3 API Mock) | Immutable document snapshot archives |
+| **Reverse Proxy** | Nginx | WebSocket connection upgrade gateway & SSE buffering bypass |
+| **Observability** | Prometheus + OpenTelemetry | Metrics collection (scrapes `/metrics`) & Jaeger trace exports |
+
+---
+
+## 3. Getting Started
+
+### Prerequisites
+- Docker & Docker Compose
+- A command-line client like `curl` or HTTP client, and `wscat` or a browser tool for WebSockets.
+
+### Running the Services
+To spin up the entire cluster (FastAPI Gateway, Celery Workers, Postgres, Redis, MinIO, Nginx, Prometheus, and Jaeger) run:
+
+```bash
+# Clone or step into the document-room folder and boot
+docker-compose up --build -d
+```
+
+To configure live OpenAI/Anthropic APIs instead of the built-in out-of-the-box simulated stream, inject your key on boot:
+```bash
+OPENAI_API_KEY="your-key-here" docker-compose up --build -d
+```
+
+### Access Ports & Services
+- **Nginx HTTP / WebSocket Gateway**: `http://localhost` (Port 80)
+- **Postgres Database**: `l
