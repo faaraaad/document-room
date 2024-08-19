@@ -76,4 +76,40 @@ OPENAI_API_KEY="your-key-here" docker-compose up --build -d
 
 ### Access Ports & Services
 - **Nginx HTTP / WebSocket Gateway**: `http://localhost` (Port 80)
-- **Postgres Database**: `l
+- **Postgres Database**: `localhost:5432`
+- **Redis Broker**: `localhost:6379`
+- **MinIO S3 Console**: `http://localhost:9001` (user: `miniouser` / password: `miniopassword`)
+- **Jaeger Traces UI**: `http://localhost:16686`
+- **Prometheus Metrics UI**: `http://localhost:9090`
+
+---
+
+## 4. REST API & WebSocket Usage Guide
+
+### A. Authentication & Sign Up
+First, register a user and log in to obtain a JWT token:
+
+```bash
+# 1. Create a Collaborator Account
+curl -X POST http://localhost/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"email": "farhad@example.com", "password": "securepassword123", "full_name": "Farhad Dev"}'
+
+# 2. Authenticate and Obtain JWT
+curl -X POST http://localhost/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "farhad@example.com", "password": "securepassword123"}'
+```
+
+Output:
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsIn...",
+  "token_type": "bearer"
+}
+```
+*Note: Copy the `access_token` for subsequent REST and WebSocket requests.*
+
+---
+
+### B. D
