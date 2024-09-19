@@ -112,4 +112,39 @@ Output:
 
 ---
 
-### B. D
+### B. Document Management (REST)
+Create a collaborative document room:
+
+```bash
+# 3. Create a Document Room (Send Authorization: Bearer <token>)
+curl -X POST http://localhost/api/documents/ \
+  -H "Authorization: Bearer <your_jwt_token>" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "CollabStream Production Plan"}'
+```
+
+Output:
+```json
+{
+  "id": 1,
+  "title": "CollabStream Production Plan",
+  "content": "",
+  "revision": 0,
+  "created_at": "2026-05-19T12:00:00",
+  "updated_at": "2026-05-19T12:00:00"
+}
+```
+
+---
+
+### C. Live Document Collaboration (WebSockets)
+Connect a client to the WebSocket stream using your favorite WebSocket client CLI (`wscat`):
+
+```bash
+# 4. Connect to Room 1 (Nginx proxies the WebSocket handshake)
+wscat -c "ws://localhost/ws/doc/1?token=<your_jwt_token>"
+```
+
+#### Client to Server Payloads:
+Once connected, send edits (OT deltas).
+Each delta specifies an `op` (`insert` or `delete`), zero-indexed `pos`, characters edited `chars`, and the `revision` the client 
