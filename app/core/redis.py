@@ -22,4 +22,4 @@ async def get_redis() -> AsyncGenerator[aioredis.Redis, None]:
     finally:
         await client.close()
 
-# PEP8 clean audit update 10
+# PEP8 clean audit update 17
