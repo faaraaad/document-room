@@ -147,4 +147,58 @@ wscat -c "ws://localhost/ws/doc/1?token=<your_jwt_token>"
 
 #### Client to Server Payloads:
 Once connected, send edits (OT deltas).
-Each delta specifies an `op` (`insert` or `delete`), zero-indexed `pos`, characters edited `chars`, and the `revision` the client 
+Each delta specifies an `op` (`insert` or `delete`), zero-indexed `pos`, characters edited `chars`, and the `revision` the client is editing:
+
+* **Send an edit (inserting "Hello " at start)**:
+```json
+{
+  "event_type": "delta",
+  "delta": {
+    "op": "insert",
+    "pos": 0,
+    "chars": "Hello ",
+    "revision": 0
+  }
+}
+```
+
+* **Send cursor movement (Premium cursor presence tracking)**:
+```json
+{
+  "event_type": "cursor",
+  "cursor_pos": 6
+}
+```
+
+* **Heartbeat (Send every 10s to keep presence alive)**:
+```json
+{
+  "event_type": "heartbeat"
+}
+```
+
+#### Server to Client Broadcasts:
+Other clients will instantly receive:
+- **Join/Leave notifications** with complete room rosters:
+```json
+{
+  "event_type": "user_joined",
+  "user_id": 1,
+  "email": "farhad@example.com",
+  "users": [
+    { "user_id": 1, "email": "farhad@example.com", "status": "online" }
+  ]
+}
+```
+- **OT conflict-resolved delta broadcasts** reflecting synchronized revision numbers:
+```json
+{
+  "event_type": "delta_broadcast",
+  "delta": {
+    "op": "insert",
+    "pos": 0,
+    "chars": "Hello ",
+    "revision": 1
+  },
+  "user_id": 1,
+  "email": "farhad@ex
