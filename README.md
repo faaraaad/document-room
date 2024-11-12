@@ -201,4 +201,49 @@ Other clients will instantly receive:
     "revision": 1
   },
   "user_id": 1,
-  "email": "farhad@ex
+  "email": "farhad@example.com"
+}
+```
+
+---
+
+## 5. Server-Sent Events (SSE) AI Analysis Stream
+Open a connection to receive real-time, debounced AI suggestions as you type:
+
+```bash
+# 5. Listen to the AI critique streaming channel
+curl -N http://localhost/api/sse/analysis/1 \
+  -H "Authorization: Bearer <your_jwt_token>"
+```
+
+FastAPI will tail the Redis stream and yield SSE frames:
+```text
+data: {"chunk": "[AI"}
+
+data: {"chunk": " Analysis]"}
+
+data: {"chunk": " Document"}
+
+data: {"chunk": " analysis"}
+
+data: {"chunk": " complete."}
+
+data: [DONE]
+```
+
+---
+
+## 6. Database Snapshots to S3
+Celery Beat automatically backs up outstanding changes to S3/MinIO. You can also force an instant snapshot manually:
+
+```bash
+# 6. Request manual document S3 Snapshot backup
+curl -X POST http://localhost/api/documents/1/snapshot \
+  -H "Authorization: Bearer <your_jwt_token>"
+```
+
+Retrieve S3 metadata snapshot lists for Room 1:
+```bash
+# 7. List S3 backup snapshots history
+curl http://localhost/api/documents/1/snapshots \
+  -
