@@ -40,4 +40,4 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-# PEP8 clean audit update 8
+# PEP8 clean audit update 22
