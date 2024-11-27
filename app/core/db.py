@@ -35,4 +35,4 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         finally:
             await session.close()
 
-# PEP8 clean audit update 16
+# PEP8 clean audit update 23
