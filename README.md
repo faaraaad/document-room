@@ -246,4 +246,41 @@ Retrieve S3 metadata snapshot lists for Room 1:
 ```bash
 # 7. List S3 backup snapshots history
 curl http://localhost/api/documents/1/snapshots \
-  -
+  -H "Authorization: Bearer <your_jwt_token>"
+```
+
+Output:
+```json
+[
+  {
+    "id": 1,
+    "document_id": 1,
+    "s3_key": "snapshots/doc_1/rev_1_1779278400.txt",
+    "revision": 1,
+    "created_at": "2026-05-19T12:05:00"
+  }
+]
+```
+
+---
+
+## 7. Development and Testing
+
+All core conflict resolution cases (overlapping deletes, splits, concurrent inserts, and tie-breakers) are covered by rigorous unit tests in `tests/test_ot_engine.py`.
+
+To run the local unit and integration tests under a local Python virtual environment:
+```bash
+# Setup Venv
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Run Tests
+pytest -v
+```
+
+---
+
+## 8. Observability Integration
+
+### Prometheus 
