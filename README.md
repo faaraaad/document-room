@@ -283,4 +283,8 @@ pytest -v
 
 ## 8. Observability Integration
 
-### Prometheus 
+### Prometheus Metrics Scraper
+Go to `http://localhost:9090`. Scraping is configured natively to run every 5s on FastAPI. You can query custom platform metrics:
+- `collabstream_active_websocket_connections`: Track active WS rooms.
+- `collabstream_document_deltas_total`: Total operational transforms processed, labeled by operation types (`insert`/`delete`) and room.
+- `collabstream_ot_concurrent_conflicts_total`:
