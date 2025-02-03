@@ -287,4 +287,6 @@ pytest -v
 Go to `http://localhost:9090`. Scraping is configured natively to run every 5s on FastAPI. You can query custom platform metrics:
 - `collabstream_active_websocket_connections`: Track active WS rooms.
 - `collabstream_document_deltas_total`: Total operational transforms processed, labeled by operation types (`insert`/`delete`) and room.
-- `collabstream_ot_concurrent_conflicts_total`:
+- `collabstream_ot_concurrent_conflicts_total`: Counter tracking the occurrence of parallel conflicts requiring mathematical resolution.
+- `collabstream_ai_analysis_triggers_total`: Debounced AI trigger count.
+- `collabstream_snapshots_created_tot
