@@ -289,4 +289,7 @@ Go to `http://localhost:9090`. Scraping is configured natively to run every 5s o
 - `collabstream_document_deltas_total`: Total operational transforms processed, labeled by operation types (`insert`/`delete`) and room.
 - `collabstream_ot_concurrent_conflicts_total`: Counter tracking the occurrence of parallel conflicts requiring mathematical resolution.
 - `collabstream_ai_analysis_triggers_total`: Debounced AI trigger count.
-- `collabstream_snapshots_created_tot
+- `collabstream_snapshots_created_total`: Document snapshot metrics.
+
+### OpenTelemetry & Jaeger Traces
+Go to `http://localhost:16686` to search for spans. Traces capture the complete end-to-end trace from FastAPI HTTP/WS requests down t
