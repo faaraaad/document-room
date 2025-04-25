@@ -2,20 +2,20 @@
 
 **CollabStream** is a production-ready, horizontally scalable real-time collaborative document platform. It supports concurrent editing via a custom **Operational Transform (OT) conflict resolution engine**, tracks online users via a **Redis presence system**, streams debounced real-time document critique using **Celery & Server-Sent Events (SSE)**, backs up periodic versions to **S3-compatible storage**, and provides professional-grade observability with **Prometheus** metrics and **OpenTelemetry** trace exports.
 
-<-->
+---
 
 ## 1. System Architecture & Flow
 
 ```mermaid
 graph TD
-    ClientA[WS Collaborator A] <-->|WS WebSocket| Nginx[Nginx Reverse Proxy]
-    ClientB[WS Collaborator B] <-->|WS WebSocket| Nginx
+    ClientA[WS Collaborator A] ---|WS WebSocket| Nginx[Nginx Reverse Proxy]
+    ClientB[WS Collaborator B] ---|WS WebSocket| Nginx
 
-    Nginx <-->|WS Load Balancer| FastAPI1[FastAPI Server Instance A]
-    Nginx <-->|WS Load Balancer| FastAPI2[FastAPI Server Instance B]
+    Nginx ---|WS Load Balancer| FastAPI1[FastAPI Server Instance A]
+    Nginx ---|WS Load Balancer| FastAPI2[FastAPI Server Instance B]
 
-    FastAPI1 <-->|PubSub Channel| RedisBroker[(Redis Broker and Presence)]
-    FastAPI2 <-->|PubSub Channel| RedisBroker
+    FastAPI1 ---|PubSub Channel| RedisBroker[(Redis Broker and Presence)]
+    FastAPI2 ---|PubSub Channel| RedisBroker
 
     FastAPI1 & FastAPI2 -->|DB Write| Postgres[(Postgres Database)]
 
@@ -39,12 +39,12 @@ graph TD
 6. **SSE Announcers**: The client listens to the `/api/sse/analysis/{room_id}` SSE endpoint. FastAPI tails the Redis stream via `XREAD` and pushes text chunks to the client.
 7. **S3 Backups**: Celery Beat runs every 60 seconds, serializing latest revisions and archiving them to MinIO (S3-compatible) storage.
 
-<-->
+---
 
 ## 2. Technology Stack & Observability
 
 | Layer | Technology | Role |
-| :<--> | :<--> | :<--> |
+| :--- | :--- | :--- |
 | **Core Web API** | FastAPI + Starlette | WebSockets, SSE & REST API Gateway |
 | **Pub/Sub & Cache** | Redis 7 | Event fan-out, presence heartbeats, AI streams, & Celery broker |
 | **Database** | PostgreSQL 15 + SQLAlchemy (Asyncpg) | Schema persistence & transactional OT history logs |
@@ -53,7 +53,7 @@ graph TD
 | **Reverse Proxy** | Nginx | WebSocket connection upgrade gateway & SSE buffering bypass |
 | **Observability** | Prometheus + OpenTelemetry | Metrics collection (scrapes `/metrics`) & Jaeger trace exports |
 
-<-->
+---
 
 ## 3. Getting Started
 
@@ -82,7 +82,7 @@ OPENAI_API_KEY="your-key-here" docker-compose up --build -d
 - **Jaeger Traces UI**: `http://localhost:16686`
 - **Prometheus Metrics UI**: `http://localhost:9090`
 
-<-->
+---
 
 ## 4. REST API & WebSocket Usage Guide
 
@@ -110,7 +110,7 @@ Output:
 ```
 *Note: Copy the `access_token` for subsequent REST and WebSocket requests.*
 
-<-->
+---
 
 ### B. Document Management (REST)
 Create a collaborative document room:
@@ -135,7 +135,7 @@ Output:
 }
 ```
 
-<-->
+---
 
 ### C. Live Document Collaboration (WebSockets)
 Connect a client to the WebSocket stream using your favorite WebSocket client CLI (`wscat`):
@@ -205,7 +205,7 @@ Other clients will instantly receive:
 }
 ```
 
-<-->
+---
 
 ## 5. Server-Sent Events (SSE) AI Analysis Stream
 Open a connection to receive real-time, debounced AI suggestions as you type:
@@ -231,7 +231,7 @@ data: {"chunk": " complete."}
 data: [DONE]
 ```
 
-<-->
+---
 
 ## 6. Database Snapshots to S3
 Celery Beat automatically backs up outstanding changes to S3/MinIO. You can also force an instant snapshot manually:
@@ -262,7 +262,7 @@ Output:
 ]
 ```
 
-<-->
+---
 
 ## 7. Development and Testing
 
@@ -279,7 +279,7 @@ pip install -r requirements.txt
 pytest -v
 ```
 
-<-->
+---
 
 ## 8. Observability Integration
 
