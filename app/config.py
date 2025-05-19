@@ -39,5 +39,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-
-# PEP8 clean audit update 29

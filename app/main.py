@@ -73,5 +73,3 @@ async def root():
         "version": "1.0.0",
         "documentation": "/docs"
     }
-
-# PEP8 clean audit update 35

@@ -21,5 +21,3 @@ async def get_redis() -> AsyncGenerator[aioredis.Redis, None]:
         yield client
     finally:
         await client.close()
-
-# PEP8 clean audit update 38
